@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.List;
 
-/*public class GetList {
+public class GetList {
     @SerializedName("market")
     @Expose
     private String market;
@@ -29,9 +29,9 @@ import java.util.List;
         return english_name;
     }
 
-}*/
+}
 
-public class GetList {
+/*public class GetList {
     @SerializedName("")
     @Expose
     private List<GetListItem> items = null;
@@ -67,5 +67,5 @@ public class GetList {
             return english_name;
         }
     }
-}
+}*/
 

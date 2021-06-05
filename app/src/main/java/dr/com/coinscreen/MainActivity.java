@@ -9,6 +9,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -35,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
         RetrofitApi service = RestfulAdapter.getInstance().getServiceApi();
 //        Observable<GetList> listObservable = service.getList();
         Observable<List<GetList>> observable = service.getList();
+        //retrofit + okHttp + rxJava
         mCompositeDisposable.add(observable.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<List<GetList>>(){
@@ -42,23 +46,25 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onNext(List<GetList> value) {
                         Log.i(TAG, "onNext: " + value.toString());
+                        Log.i(TAG, "onNext: 1111" + value.get(0).getKorean_name());
+                        getList = value;
 
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         Log.i(TAG, "onError: " + e.toString());
-                        Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onComplete() {
-                        Log.i(TAG, "onComplete: 111111" + getList.get(0).getItems().get(0).getMarket() + " " + getList.get(0).getItems().get(0).getKorean_name());
-//                        binding.market.setText(getList.get(1).getMarket());
-//                        binding.koreanName.setText(getList.get(1).getKorean_name());
-//                        binding.englishName.setText(getList.getItems().get(0).getEnglish_name());
+//                        Log.i(TAG, "onComplete: " + );
+                        binding.market.setText(getList.get(1).getMarket());
+                        binding.koreanName.setText(getList.get(1).getKorean_name());
+                        binding.englishName.setText(getList.get(1).getEnglish_name());
                     }
                 })
         );
+
     }
 }
