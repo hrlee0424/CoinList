@@ -2,20 +2,16 @@ package dr.com.coinscreen;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import dr.com.coinscreen.databinding.ActivityMainBinding;
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -30,25 +26,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
+
         getTicker();
     }
 
-    List<GetList> getList;
+    List<GetMainList> getMainList;
     private void getTicker(){
         RetrofitApi service = RestfulAdapter.getInstance().getServiceApi();
-//        Observable<GetList> listObservable = service.getList();
-        Observable<List<GetList>> observable = service.getList();
+        Observable<List<GetMainList>> observable = service.getList();
         //retrofit + okHttp + rxJava
         mCompositeDisposable.add(observable.subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableObserver<List<GetList>>(){
+                .subscribeWith(new DisposableObserver<List<GetMainList>>(){
 
                     @Override
-                    public void onNext(List<GetList> value) {
+                    public void onNext(List<GetMainList> value) {
                         Log.i(TAG, "onNext: " + value.toString());
                         Log.i(TAG, "onNext: 1111" + value.get(0).getKorean_name());
-                        getList = value;
-
+                        getMainList = value;
                     }
 
                     @Override
@@ -58,10 +53,13 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onComplete() {
+                        MainRecyclerViewAdapter adapter = new MainRecyclerViewAdapter(getMainList);
+                        binding.mainList.setAdapter(adapter);
 //                        Log.i(TAG, "onComplete: " + );
-                        binding.market.setText(getList.get(1).getMarket());
-                        binding.koreanName.setText(getList.get(1).getKorean_name());
-                        binding.englishName.setText(getList.get(1).getEnglish_name());
+//                        binding.market.setText(getList.get(1).getMarket());
+//                        binding.koreanName.setText(getList.get(1).getKorean_name());
+//                        binding.englishName.setText(getList.get(1).getEnglish_name());
+
                     }
                 })
         );

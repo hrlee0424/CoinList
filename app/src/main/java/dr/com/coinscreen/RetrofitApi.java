@@ -9,6 +9,6 @@ import retrofit2.http.Headers;
 public interface RetrofitApi {
     @Headers({"content-type:application/json"})
     @GET("market/all")
-    Observable<List<GetList>> getList();
+    Observable<List<GetMainList>> getList();
 
 }
