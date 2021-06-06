@@ -1,10 +1,12 @@
 package dr.com.coinscreen;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -15,8 +17,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class MainRecyclerViewAdapter extends RecyclerView.Adapter<MainRecyclerViewAdapter.ViewHolder> {
     public List<GetMainList> getMainList;
-    public MainRecyclerViewAdapter(List<GetMainList> getList){
-        getMainList = getList;
+    private  Context context;
+    public MainRecyclerViewAdapter(List<GetMainList> getList, Context getContext){
+        this.getMainList = getList;
+        this.context = getContext;
     }
 
 /*public class MainRecyclerViewAdapter extends RecyclerView.Adapter<BindingViewHolder<ListItemBinding>.ViewHolder> {
@@ -74,6 +78,20 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<MainRecyclerVi
             market = itemView.findViewById(R.id.market);
             koreanName = itemView.findViewById(R.id.koreanName);
             englishName = itemView.findViewById(R.id.englishName);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION){
+//                       Toast.makeText(context, getMainList.get(position).getKorean_name(), Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(context, OrderBookActivity.class);
+                        intent.putExtra("market", getMainList.get(position).getMarket());
+                        context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    }
+                }
+            });
+
         }
     }
 

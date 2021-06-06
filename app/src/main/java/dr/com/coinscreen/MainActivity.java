@@ -26,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
 
-
         getTicker();
     }
 
@@ -41,8 +40,6 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(List<GetMainList> value) {
-                        Log.i(TAG, "onNext: " + value.toString());
-                        Log.i(TAG, "onNext: 1111" + value.get(0).getKorean_name());
                         getMainList = value;
                     }
 
@@ -53,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onComplete() {
-                        MainRecyclerViewAdapter adapter = new MainRecyclerViewAdapter(getMainList);
+                        MainRecyclerViewAdapter adapter = new MainRecyclerViewAdapter(getMainList, getApplicationContext());
                         binding.mainList.setAdapter(adapter);
 //                        Log.i(TAG, "onComplete: " + );
 //                        binding.market.setText(getList.get(1).getMarket());
