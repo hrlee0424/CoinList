@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
     <data class="DetailBinding">
         <import type="dr.com.coinscreen.dto.OrderBookModel"/>
@@ -10,8 +10,7 @@
             type="dr.com.coinscreen.dto.OrderBookModel" />
     </data>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -28,18 +27,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <TextView
-        android:id="@+id/total_ask_size"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-    <TextView
-        android:id="@+id/total_bid_size"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-
-
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -52,18 +39,44 @@
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/ask_priceList"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginHorizontal="160dp"
                 android:layout_height="wrap_content"
                 android:background="#C57D7D"
+                android:stackFromBottom="true"
+                app:reverseLayout="true"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/bid_priceList"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="160dp"
                 android:background="#79B7E1"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/total_ask_size"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:text="수량"/>
+
+                <TextView
+                    android:id="@+id/total_bid_size"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
