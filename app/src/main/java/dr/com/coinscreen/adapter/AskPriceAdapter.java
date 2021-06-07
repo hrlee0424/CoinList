@@ -14,12 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import dr.com.coinscreen.R;
 import dr.com.coinscreen.dto.OrderBookModel;
 
-public class OrderBookAdapter extends RecyclerView.Adapter<OrderBookAdapter.ViewHolder> {
+public class AskPriceAdapter extends RecyclerView.Adapter<AskPriceAdapter.ViewHolder> {
     private static final String TAG = "OrderBookAdapter";
     public List<OrderBookModel> orderBookModelList;
     public Context context;
 
-    public OrderBookAdapter(Context context, List<OrderBookModel> models){
+    public AskPriceAdapter(Context context, List<OrderBookModel> models){
         this.context = context;
         this.orderBookModelList = models;
     }
@@ -27,7 +27,6 @@ public class OrderBookAdapter extends RecyclerView.Adapter<OrderBookAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View v = inflater.inflate(R.layout.orderbook_list_item,parent,false);
         return new ViewHolder(v);
@@ -38,9 +37,9 @@ public class OrderBookAdapter extends RecyclerView.Adapter<OrderBookAdapter.View
 
         Log.i(TAG, "onBindViewHolder: " + orderBookModelList.get(0).getItems().get(position).getAsk_price());
         holder.ask_price.setText(String.valueOf(orderBookModelList.get(0).getItems().get(position).getAsk_price()));
-        holder.bid_price.setText(String.valueOf(orderBookModelList.get(0).getItems().get(position).getBid_price()));
-        holder.ask_size.setText(String.valueOf(orderBookModelList.get(0).getItems().get(position).getAsk_size()));
-        holder.bid_size.setText(String.valueOf(orderBookModelList.get(0).getItems().get(position).getBid_size()));
+//        holder.bid_price.setText(String.valueOf(orderBookModelList.get(0).getItems().get(position).getBid_price()));
+//        holder.ask_size.setText(String.valueOf(orderBookModelList.get(0).getItems().get(position).getAsk_size()));
+//        holder.bid_size.setText(String.valueOf(orderBookModelList.get(0).getItems().get(position).getBid_size()));
     }
 
     @Override
@@ -54,9 +53,9 @@ public class OrderBookAdapter extends RecyclerView.Adapter<OrderBookAdapter.View
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ask_price = itemView.findViewById(R.id.ask_price);
-            bid_price = itemView.findViewById(R.id.bid_price);
-            ask_size = itemView.findViewById(R.id.ask_size);
-            bid_size = itemView.findViewById(R.id.bid_size);
+//            bid_price = itemView.findViewById(R.id.bid_price);
+//            ask_size = itemView.findViewById(R.id.ask_size);
+//            bid_size = itemView.findViewById(R.id.bid_size);
         }
     }
 }
