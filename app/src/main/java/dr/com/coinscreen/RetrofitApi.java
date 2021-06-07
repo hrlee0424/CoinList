@@ -2,11 +2,11 @@ package dr.com.coinscreen;
 
 import java.util.List;
 
+import dr.com.coinscreen.dto.GetMainList;
+import dr.com.coinscreen.dto.OrderBookModel;
 import io.reactivex.Observable;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
-import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface RetrofitApi {

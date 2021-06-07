@@ -2,9 +2,10 @@ package dr.com.coinscreen;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import dr.com.coinscreen.adapter.OrderBookAdapter;
 import dr.com.coinscreen.databinding.DetailBinding;
+import dr.com.coinscreen.dto.OrderBookModel;
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
@@ -65,6 +66,11 @@ public class OrderBookActivity extends AppCompatActivity {
                 binding.timestamp.setText(String.valueOf(getList.get(0).getTimestamp()));
                 binding.totalAskSize.setText(String.valueOf(getList.get(0).getTotal_ask_size()));
                 binding.totalBidSize.setText(String.valueOf(getList.get(0).getTotal_bid_size()));
+                Log.i(TAG, "onComplete: 1111" + getList.get(0).getItems().get(1).getBid_price());
+                if (getList.get(0).getItems().size() > 0){
+                    OrderBookAdapter adapter = new OrderBookAdapter(getApplicationContext(), getList);
+                    binding.orderBookList.setAdapter(adapter);
+                }
             }
         }));
 

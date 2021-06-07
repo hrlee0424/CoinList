@@ -6,11 +6,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data class="ActivityMainBinding">
-        <import type="dr.com.coinscreen.GetMainList"/>
+        <import type="dr.com.coinscreen.dto.GetMainList"/>
 
         <variable
             name="mainList"
-            type="dr.com.coinscreen.GetMainList" />
+            type="dr.com.coinscreen.dto.GetMainList" />
     </data>
 
 <LinearLayout

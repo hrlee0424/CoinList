@@ -1,4 +1,4 @@
-package dr.com.coinscreen;
+package dr.com.coinscreen.dto;
 
 public class SetOrderBook {
     private String market;

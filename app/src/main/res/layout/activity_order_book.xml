@@ -3,11 +3,11 @@
 <layout>
 
     <data class="DetailBinding">
-        <import type="dr.com.coinscreen.OrderBookModel"/>
+        <import type="dr.com.coinscreen.dto.OrderBookModel"/>
 
         <variable
             name="detailModel"
-            type="dr.com.coinscreen.OrderBookModel" />
+            type="dr.com.coinscreen.dto.OrderBookModel" />
     </data>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -41,7 +41,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/orderBookList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
 </LinearLayout>
 </layout>

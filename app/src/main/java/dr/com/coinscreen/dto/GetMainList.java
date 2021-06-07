@@ -1,4 +1,4 @@
-package dr.com.coinscreen;
+package dr.com.coinscreen.dto;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

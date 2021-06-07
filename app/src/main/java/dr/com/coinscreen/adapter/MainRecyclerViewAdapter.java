@@ -1,4 +1,4 @@
-package dr.com.coinscreen;
+package dr.com.coinscreen.adapter;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,18 +6,18 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
 import androidx.recyclerview.widget.RecyclerView;
+import dr.com.coinscreen.dto.GetMainList;
+import dr.com.coinscreen.OrderBookActivity;
+import dr.com.coinscreen.R;
 
 public class MainRecyclerViewAdapter extends RecyclerView.Adapter<MainRecyclerViewAdapter.ViewHolder> {
     public List<GetMainList> getMainList;
-    private  Context context;
+    public  Context context;
     public MainRecyclerViewAdapter(List<GetMainList> getList, Context getContext){
         this.getMainList = getList;
         this.context = getContext;

@@ -2,8 +2,9 @@ package dr.com.coinscreen;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import dr.com.coinscreen.adapter.MainRecyclerViewAdapter;
 import dr.com.coinscreen.databinding.ActivityMainBinding;
+import dr.com.coinscreen.dto.GetMainList;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;

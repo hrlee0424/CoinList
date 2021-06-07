@@ -5,7 +5,7 @@
     <data>
         <variable
             name="mainlistitemtem"
-            type="dr.com.coinscreen.GetMainList" />
+            type="dr.com.coinscreen.dto.GetMainList" />
     </data>
 
 <LinearLayout
