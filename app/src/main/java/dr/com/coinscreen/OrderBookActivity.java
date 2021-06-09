@@ -7,6 +7,7 @@ import dr.com.coinscreen.adapter.AskPriceAdapter;
 import dr.com.coinscreen.adapter.BidPriceAdapter;
 import dr.com.coinscreen.databinding.DetailBinding;
 import dr.com.coinscreen.dto.OrderBookModel;
+import dr.com.coinscreen.dto.TickerModel;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -15,6 +16,7 @@ import io.reactivex.schedulers.Schedulers;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 
 import java.util.Collection;
@@ -40,13 +42,15 @@ public class OrderBookActivity extends AppCompatActivity {
 
         if (!market.isEmpty()) {
             getOrderBook();
+            getTicker();
         }
+
 
     }
 
     List<OrderBookModel> getList;
+    RetrofitApi service = RestfulAdapter.getInstance().getServiceApi();
     private void getOrderBook(){
-        RetrofitApi service = RestfulAdapter.getInstance().getServiceApi();
         Observable<List<OrderBookModel>> observable = service.getOrderBookItem(market);
 
         mCompositeDisposable.add(observable.subscribeOn(Schedulers.io())
@@ -74,6 +78,13 @@ public class OrderBookActivity extends AppCompatActivity {
                     AskPriceAdapter askPriceAdapter = new AskPriceAdapter(getApplicationContext(), getList);
                     BidPriceAdapter bidPriceAdapter = new BidPriceAdapter(getApplicationContext(), getList);
                     binding.askPriceList.setAdapter(askPriceAdapter);
+//                    new Handler().postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            binding.askPriceList.scrollToPosition(7);
+//                            binding.askPriceList.getLayoutManager().scrollToPosition(7);
+//                        }
+//                    }, 1000);
                     binding.askPriceList.setNestedScrollingEnabled(true);
                     binding.bidPriceList.setAdapter(bidPriceAdapter);
                     binding.bidPriceList.setNestedScrollingEnabled(true);
@@ -82,5 +93,37 @@ public class OrderBookActivity extends AppCompatActivity {
         }));
 
 
+    }
+
+    List<TickerModel> getTickerList;
+    private void getTicker(){
+        Observable<List<TickerModel>> observable = service.getTickerList(market);
+        mCompositeDisposable.add(observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<List<TickerModel>>() {
+
+                    @Override
+                    public void onNext(List<TickerModel> value) {
+                        Log.i(TAG, "onNext: 11111111" + value.toString());
+                        getTickerList = value;
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i(TAG, "onError: 1111111" + e.toString());
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        binding.accTradeVolume24h.setText(String.valueOf(getTickerList.get(0).getAcc_trade_volume_24h()));
+                        binding.accTradePrice24h.setText(String.valueOf(getTickerList.get(0).getAcc_trade_price_24h()));
+                        binding.highest52WeekPrice.setText(String.valueOf(getTickerList.get(0).getHighest_52_week_price()));
+                        binding.lowest52WeekPrice.setText(String.valueOf(getTickerList.get(0).getLowest_52_week_price()));
+                        binding.prevClosingPrice.setText(String.valueOf(getTickerList.get(0).getPrev_closing_price()));
+                        binding.highPrice.setText(String.valueOf(getTickerList.get(0).getHigh_price()));
+                        binding.lowPrice.setText(String.valueOf(getTickerList.get(0).getLow_price()));
+
+                    }
+                }));
     }
 }
