@@ -7,10 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+import dr.com.coinscreen.Plain;
 import dr.com.coinscreen.R;
 import dr.com.coinscreen.dto.OrderBookModel;
 
@@ -34,12 +36,8 @@ public class AskPriceAdapter extends RecyclerView.Adapter<AskPriceAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
-//        Log.i(TAG, "onBindViewHolder: " + orderBookModelList.get(0).getItems().get(position).getAsk_price());
-            holder.ask_price.setText(String.valueOf(orderBookModelList.get(0).getItems().get(position).getAsk_price()));
-//        holder.bid_price.setText(String.valueOf(orderBookModelList.get(0).getItems().get(position).getBid_price()));
-//        holder.ask_size.setText(String.valueOf(orderBookModelList.get(0).getItems().get(position).getAsk_size()));
-//        holder.bid_size.setText(String.valueOf(orderBookModelList.get(0).getItems().get(position).getBid_size()));
+//        holder.ask_price.setText(String.valueOf(orderBookModelList.get(0).getItems().get(position).getAsk_price()));
+        holder.ask_price.setText(new Plain().toPlainString(String.valueOf(orderBookModelList.get(0).getItems().get(position).getAsk_price())));
     }
 
     @Override

@@ -19,9 +19,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 public class OrderBookActivity extends AppCompatActivity {
     private static final String TAG = "OrderBookActivity";
@@ -91,8 +94,6 @@ public class OrderBookActivity extends AppCompatActivity {
                 }
             }
         }));
-
-
     }
 
     List<TickerModel> getTickerList;
@@ -115,14 +116,30 @@ public class OrderBookActivity extends AppCompatActivity {
 
                     @Override
                     public void onComplete() {
-                        binding.accTradeVolume24h.setText(String.valueOf(getTickerList.get(0).getAcc_trade_volume_24h()));
+                        /*binding.accTradeVolume24h.setText(String.valueOf(getTickerList.get(0).getAcc_trade_volume_24h()));
                         binding.accTradePrice24h.setText(String.valueOf(getTickerList.get(0).getAcc_trade_price_24h()));
                         binding.highest52WeekPrice.setText(String.valueOf(getTickerList.get(0).getHighest_52_week_price()));
                         binding.lowest52WeekPrice.setText(String.valueOf(getTickerList.get(0).getLowest_52_week_price()));
                         binding.prevClosingPrice.setText(String.valueOf(getTickerList.get(0).getPrev_closing_price()));
                         binding.highPrice.setText(String.valueOf(getTickerList.get(0).getHigh_price()));
-                        binding.lowPrice.setText(String.valueOf(getTickerList.get(0).getLow_price()));
+                        binding.lowPrice.setText(String.valueOf(getTickerList.get(0).getLow_price()));*/
+                        double d = getTickerList.get(0).getLowest_52_week_price();
+                        Log.i(TAG, "onComplete: qqqqqq" +String.valueOf(getTickerList.get(0).getAcc_trade_volume_24h()));
+                        DecimalFormat df = new DecimalFormat();
+                        Log.i(TAG, "onComplete: qqqqqq" + df.format(d));
+                        Log.i(TAG, "onComplete: qqqqqq" + new Plain().toPlainString(String.valueOf(getTickerList.get(0).getAcc_trade_volume_24h())));
+                        Log.i(TAG, "onComplete: hhhhhhhhhhhhhhh" + String.format("%1$,.0f", getTickerList.get(0).getAcc_trade_volume_24h()));
+                        Log.i(TAG, "onComplete: aaaaaaaaaaaaaaa" + String.format("%1$,.0f", getTickerList.get(0).getLowest_52_week_price()));
 
+
+//                        binding.accTradeVolume24h.setText(new Plain().toPlainString(String.valueOf(getTickerList.get(0).getAcc_trade_volume_24h())));
+                        binding.accTradeVolume24h.setText(String.format(Locale.KOREA, "%1$,.0f", getTickerList.get(0).getAcc_trade_volume_24h()));
+                        binding.accTradePrice24h.setText(new Plain().toPlainString(String.valueOf(getTickerList.get(0).getAcc_trade_price_24h())));
+                        binding.highest52WeekPrice.setText(new Plain().toPlainString(String.valueOf(getTickerList.get(0).getHighest_52_week_price())));
+                        binding.lowest52WeekPrice.setText(new Plain().toPlainString(String.valueOf(getTickerList.get(0).getLowest_52_week_price())));
+                        binding.prevClosingPrice.setText(new Plain().toPlainString(String.valueOf(getTickerList.get(0).getPrev_closing_price())));
+                        binding.highPrice.setText(new Plain().toPlainString(String.valueOf(getTickerList.get(0).getHigh_price())));
+                        binding.lowPrice.setText(new Plain().toPlainString(String.valueOf(getTickerList.get(0).getLow_price())));
                     }
                 }));
     }
