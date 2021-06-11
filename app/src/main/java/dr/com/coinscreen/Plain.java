@@ -2,6 +2,8 @@ package dr.com.coinscreen;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 public class Plain {
@@ -22,6 +24,16 @@ public class Plain {
         }else{
             return new BigDecimal(num).toString();
         }
+    }
+
+    public String roundDouble(double num){
+        return String.format(Locale.KOREA, "%.3f", num);
+    }
+
+    public String toTimeStamp(long num){
+        Date toTimeStamp = new Date(num);
+        SimpleDateFormat datef = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.getDefault());
+        return datef.format(toTimeStamp) ;
     }
 
     /*public String toDoubleFormat(Double num) {

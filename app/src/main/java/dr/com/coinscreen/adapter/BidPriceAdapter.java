@@ -1,6 +1,7 @@
 package dr.com.coinscreen.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,10 +20,12 @@ import dr.com.coinscreen.dto.OrderBookModel;
 public class BidPriceAdapter extends RecyclerView.Adapter<BidPriceAdapter.ViewHolder> {
     public List<OrderBookModel> orderBookModelList;
     public Context context;
+    private final double change;
 
-    public BidPriceAdapter(Context context, List<OrderBookModel> models){
+    public BidPriceAdapter(Context context, List<OrderBookModel> models, double change){
         this.context = context;
         this.orderBookModelList = models;
+        this.change = change;
     }
 
     @NonNull
@@ -36,6 +39,16 @@ public class BidPriceAdapter extends RecyclerView.Adapter<BidPriceAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 //        holder.bid_price.setText(String.valueOf(orderBookModelList.get(0).getItems().get(position).getBid_price()));
+        double num = orderBookModelList.get(0).getItems().get(position).getBid_price();
+
+        if (num < change){
+            holder.bid_price.setTextColor(Color.BLUE);
+        }else if(num == change){
+            holder.bid_price.setTextColor(Color.BLACK);
+        }else {
+            holder.bid_price.setTextColor(Color.RED);
+        }
+
         holder.bid_price.setText(new Plain().toPlainString(String.valueOf(orderBookModelList.get(0).getItems().get(position).getBid_price())));
 //        holder.bid_price.setText(String.format("%1$,.0f", orderBookModelList.get(0).getItems().get(position).getBid_price()));
     }

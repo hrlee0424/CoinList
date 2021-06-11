@@ -87,6 +87,7 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter<MainRecyclerVi
 //                       Toast.makeText(context, getMainList.get(position).getKorean_name(), Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(context, OrderBookActivity.class);
                         intent.putExtra("market", getMainList.get(position).getMarket());
+                        intent.putExtra("korName", getMainList.get(position).getKorean_name());
                         context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                     }
                 }

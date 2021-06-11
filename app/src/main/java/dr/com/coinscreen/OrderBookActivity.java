@@ -2,6 +2,7 @@ package dr.com.coinscreen;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import dr.com.coinscreen.adapter.AskPriceAdapter;
 import dr.com.coinscreen.adapter.BidPriceAdapter;
@@ -19,30 +20,32 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
-import android.provider.Settings;
 import android.util.Log;
-import android.widget.Toast;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-import java.util.Objects;
-import java.util.Timer;
-import java.util.TimerTask;
 
 public class OrderBookActivity extends AppCompatActivity {
     private static final String TAG = "OrderBookActivity";
     private DetailBinding binding;
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
-    private String market;
+    private String market, korName;
     final Handler handler = new Handler(Looper.getMainLooper());
     List<OrderBookModel> getList;
     private AskPriceAdapter askPriceAdapter;
     private BidPriceAdapter bidPriceAdapter;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        startHandler();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,7 @@ public class OrderBookActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         market = intent.getStringExtra("market");
+        korName = intent.getStringExtra("korName");
         Log.i(TAG, "onCreate: " + market);
 
         /*if (!market.isEmpty()) {
@@ -60,29 +64,38 @@ public class OrderBookActivity extends AppCompatActivity {
             getTicker();
         }*/
 
+        DividerItemDecoration dividerItemDecoration =
+                new DividerItemDecoration(getApplicationContext(),new LinearLayoutManager(this).getOrientation());
+        dividerItemDecoration.setDrawable(getApplicationContext().getResources().getDrawable(R.drawable.recyclerview_divider));
+        binding.askPriceList.addItemDecoration(dividerItemDecoration);
+        binding.bidPriceList.addItemDecoration(dividerItemDecoration);
+
+    }
+
+    private void startHandler(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    // 코드 작성
                     if (!market.isEmpty()) {
-                        getOrderBook();
                         getTicker();
                     }
-                    handler.postDelayed(this, 300);
+                    handler.postDelayed(this, 200);
                 }
             }, 0, 0);
         }
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        handler.removeMessages(0);
+    protected void onStop() {
+        super.onStop();
+        if (handler != null){
+            handler.removeMessages(0);
+        }
     }
 
     RetrofitApi service = RestfulAdapter.getInstance().getServiceApi();
-    private void getOrderBook(){
+    private void getOrderBook(double change){
         Observable<List<OrderBookModel>> observable = service.getOrderBookItem(market);
 
         mCompositeDisposable.add(observable.subscribeOn(Schedulers.io())
@@ -98,30 +111,28 @@ public class OrderBookActivity extends AppCompatActivity {
                     @Override
                     public void onError(Throwable e) {
                         Log.i(TAG, "onError: " + e.toString());
+                        if (handler != null){
+                            handler.removeMessages(0);
+                        }
                     }
 
                     @Override
                     public void onComplete() {
                         binding.market.setText(getList.get(0).getMarket());
-                        binding.timestamp.setText(String.valueOf(getList.get(0).getTimestamp()));
-                        binding.totalAskSize.setText(String.valueOf(getList.get(0).getTotal_ask_size()));
-                        binding.totalBidSize.setText(String.valueOf(getList.get(0).getTotal_bid_size()));
+                        binding.timestamp.setText(new Plain().toTimeStamp(getList.get(0).getTimestamp()));
+                        binding.korName.setText(korName);
+
+                        /*binding.totalAskSize.setText(String.valueOf(getList.get(0).getTotal_ask_size()));
+                        binding.totalBidSize.setText(String.valueOf(getList.get(0).getTotal_bid_size()));*/
+                        binding.totalAskSize.setText(new Plain().roundDouble(getList.get(0).getTotal_ask_size()));
+                        binding.totalBidSize.setText(new Plain().roundDouble(getList.get(0).getTotal_bid_size()));
                         if (getList.get(0).getItems().size() > 0){
-                            askPriceAdapter = new AskPriceAdapter(getApplicationContext(), getList);
-                            bidPriceAdapter = new BidPriceAdapter(getApplicationContext(), getList);
+                            askPriceAdapter = new AskPriceAdapter(getApplicationContext(), getList, change);
+                            bidPriceAdapter = new BidPriceAdapter(getApplicationContext(), getList, change);
                             binding.askPriceList.setAdapter(askPriceAdapter);
                             binding.askPriceList.setNestedScrollingEnabled(true);
                             binding.bidPriceList.setAdapter(bidPriceAdapter);
-                            binding.bidPriceList.setNestedScrollingEnabled(true);
-                            binding.askPriceList.scrollToPosition(7);
-                            Objects.requireNonNull(binding.askPriceList.getLayoutManager()).scrollToPosition(7);
-//                    new Handler().postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            binding.askPriceList.scrollToPosition(7);
-//                            binding.askPriceList.getLayoutManager().scrollToPosition(7);
-//                        }
-//                    }, 1000);
+                            binding.askPriceList.smoothScrollToPosition(7);
                         }
                     }
                 }));
@@ -143,6 +154,9 @@ public class OrderBookActivity extends AppCompatActivity {
                         @Override
                         public void onError(Throwable e) {
                             Log.i(TAG, "onError: 1111111" + e.toString());
+                            if (handler != null){
+                                handler.removeMessages(0);
+                            }
                         }
 
                         @Override
@@ -154,23 +168,19 @@ public class OrderBookActivity extends AppCompatActivity {
                 binding.prevClosingPrice.setText(String.valueOf(getTickerList.get(0).getPrev_closing_price()));
                 binding.highPrice.setText(String.valueOf(getTickerList.get(0).getHigh_price()));
                 binding.lowPrice.setText(String.valueOf(getTickerList.get(0).getLow_price()));*/
-                            double d = getTickerList.get(0).getLowest_52_week_price();
-                            Log.i(TAG, "onComplete: qqqqqq" +String.valueOf(getTickerList.get(0).getAcc_trade_volume_24h()));
-                            DecimalFormat df = new DecimalFormat();
-                            Log.i(TAG, "onComplete: qqqqqq" + df.format(d));
-                            Log.i(TAG, "onComplete: qqqqqq" + new Plain().toPlainString(String.valueOf(getTickerList.get(0).getAcc_trade_volume_24h())));
-                            Log.i(TAG, "onComplete: hhhhhhhhhhhhhhh" + String.format("%1$,.0f", getTickerList.get(0).getAcc_trade_volume_24h()));
-                            Log.i(TAG, "onComplete: aaaaaaaaaaaaaaa" + String.format("%1$,.0f", getTickerList.get(0).getLowest_52_week_price()));
-
-
 //                        binding.accTradeVolume24h.setText(new Plain().toPlainString(String.valueOf(getTickerList.get(0).getAcc_trade_volume_24h())));
-                            binding.accTradeVolume24h.setText(String.format(Locale.KOREA, "%1$,.0f", getTickerList.get(0).getAcc_trade_volume_24h()));
-                            binding.accTradePrice24h.setText(new Plain().toPlainString(String.valueOf(getTickerList.get(0).getAcc_trade_price_24h())));
-                            binding.highest52WeekPrice.setText(new Plain().toPlainString(String.valueOf(getTickerList.get(0).getHighest_52_week_price())));
-                            binding.lowest52WeekPrice.setText(new Plain().toPlainString(String.valueOf(getTickerList.get(0).getLowest_52_week_price())));
-                            binding.prevClosingPrice.setText(new Plain().toPlainString(String.valueOf(getTickerList.get(0).getPrev_closing_price())));
-                            binding.highPrice.setText(new Plain().toPlainString(String.valueOf(getTickerList.get(0).getHigh_price())));
-                            binding.lowPrice.setText(new Plain().toPlainString(String.valueOf(getTickerList.get(0).getLow_price())));
+                            int idx = market.indexOf("-");
+                            String kind = market.substring(idx + 1);
+                            double change = getTickerList.get(0).getPrev_closing_price();
+                            Log.i(TAG, "onComplete: change : " + change);
+                            binding.accTradeVolume24h.setText(String.format("거래량\n%s", String.format(Locale.KOREA, "%1$,.0f", getTickerList.get(0).getAcc_trade_volume_24h()) + " " + kind));
+                            binding.accTradePrice24h.setText(String.format("거래대금\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getAcc_trade_price_24h()))));
+                            binding.highest52WeekPrice.setText(String.format("52주 최고\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getHighest_52_week_price()))));
+                            binding.lowest52WeekPrice.setText(String.format("52주 최저\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getLowest_52_week_price()))));
+                            binding.prevClosingPrice.setText(String.format("전일 종가\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getPrev_closing_price()))));
+                            binding.highPrice.setText(String.format("당일 고가\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getHigh_price()))));
+                            binding.lowPrice.setText(String.format("당일 저가\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getLow_price()))));
+                            getOrderBook(change);
                         }
                     }));
         }

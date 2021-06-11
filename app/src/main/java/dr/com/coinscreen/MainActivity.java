@@ -2,6 +2,8 @@ package dr.com.coinscreen;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import dr.com.coinscreen.adapter.MainRecyclerViewAdapter;
 import dr.com.coinscreen.databinding.ActivityMainBinding;
 import dr.com.coinscreen.dto.GetMainList;
@@ -26,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+
+        DividerItemDecoration dividerItemDecoration =
+                new DividerItemDecoration(getApplicationContext(),new LinearLayoutManager(this).getOrientation());
+        binding.mainList.addItemDecoration(dividerItemDecoration);
 
         getTicker();
     }
