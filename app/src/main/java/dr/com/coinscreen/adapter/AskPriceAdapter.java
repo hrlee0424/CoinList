@@ -21,12 +21,12 @@ public class AskPriceAdapter extends RecyclerView.Adapter<AskPriceAdapter.ViewHo
     private static final String TAG = "OrderBookAdapter";
     public List<OrderBookModel> orderBookModelList;
     public Context context;
-    private final double change;
+    public double preClosingPrice;
 
-    public AskPriceAdapter(Context context, List<OrderBookModel> models, double change){
+    public AskPriceAdapter(Context context, List<OrderBookModel> models, double preClosingPrice){
         this.context = context;
         this.orderBookModelList = models;
-        this.change = change;
+        this.preClosingPrice = preClosingPrice;
     }
 
     @NonNull
@@ -40,33 +40,22 @@ public class AskPriceAdapter extends RecyclerView.Adapter<AskPriceAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
 //        holder.ask_price.setText(String.valueOf(orderBookModelList.get(0).getItems().get(position).getAsk_price()));
-        double num = orderBookModelList.get(0).getItems().get(position).getAsk_price();
-        if (num < change){
+        double now_orderBook = orderBookModelList.get(0).getItems().get(position).getAsk_price();
+        String rate = new Plain().toFluctuationRate(now_orderBook, preClosingPrice);
+        Log.i(TAG, "onBindViewHolder: ssssssss " + rate);
+        if (now_orderBook < preClosingPrice){
             holder.ask_price.setTextColor(Color.BLUE);
-        }else if(num == change){
-            Log.i(TAG, "onBindViewHolder: 222222222222");
-            Log.i(TAG, "onBindViewHolder: 222222222222" + "num : " + num + "   " + "change : " + change);
+        }else if(now_orderBook == preClosingPrice){
             holder.ask_price.setTextColor(Color.BLACK);
         }else {
-            Log.i(TAG, "onBindViewHolder: 33333333333");
-            Log.i(TAG, "onBindViewHolder: 33333333333" + "num : " + num + "   " + "change : " + change);
             holder.ask_price.setTextColor(Color.RED);
         }
 
-        holder.ask_price.setText(new Plain().toPlainString(String.valueOf(num)));
-
-        /*switch (change){
-            case num < change :
-                holder.ask_price.setTextColor(Color.BLACK);
-                break;
-            case "RISE" :
-                holder.ask_price.setTextColor(Color.RED);
-                break;
-            case "FALL" :
-                holder.ask_price.setTextColor(Color.BLUE);
-                break;
-        }*/
-
+        if (rate.contains("-100")){
+            holder.ask_price.setText("");
+        }else{
+            holder.ask_price.setText(String.format("%s%s", new Plain().toPlainString(String.valueOf(now_orderBook)), " " + rate + "%"));
+        }
     }
 
     @Override
@@ -75,14 +64,11 @@ public class AskPriceAdapter extends RecyclerView.Adapter<AskPriceAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        TextView ask_price, bid_price, ask_size, bid_size;
+        TextView ask_price;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             ask_price = itemView.findViewById(R.id.ask_price);
-//            bid_price = itemView.findViewById(R.id.bid_price);
-//            ask_size = itemView.findViewById(R.id.ask_size);
-//            bid_size = itemView.findViewById(R.id.bid_size);
         }
     }
 }

@@ -36,6 +36,18 @@ public class Plain {
         return datef.format(toTimeStamp) ;
     }
 
+    public String toFluctuationRate(double nowClosingPrice, double preClosingPrice){
+        double dif_price = nowClosingPrice - preClosingPrice;
+        double rate = (dif_price / preClosingPrice) * 100.0;
+        String result;
+        if (rate > 0) {
+            result = "+" + String.format(Locale.KOREA, "%.2f", rate);
+        }else {
+            result = String.format(Locale.KOREA, "%.2f", rate);
+        }
+        return result;
+    }
+
     /*public String toDoubleFormat(Double num) {
         DecimalFormat df = null;
 

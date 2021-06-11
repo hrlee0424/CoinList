@@ -95,7 +95,7 @@ public class OrderBookActivity extends AppCompatActivity {
     }
 
     RetrofitApi service = RestfulAdapter.getInstance().getServiceApi();
-    private void getOrderBook(double change){
+    private void getOrderBook(double preClosingPrice, double nowClosingPrice){
         Observable<List<OrderBookModel>> observable = service.getOrderBookItem(market);
 
         mCompositeDisposable.add(observable.subscribeOn(Schedulers.io())
@@ -127,8 +127,8 @@ public class OrderBookActivity extends AppCompatActivity {
                         binding.totalAskSize.setText(new Plain().roundDouble(getList.get(0).getTotal_ask_size()));
                         binding.totalBidSize.setText(new Plain().roundDouble(getList.get(0).getTotal_bid_size()));
                         if (getList.get(0).getItems().size() > 0){
-                            askPriceAdapter = new AskPriceAdapter(getApplicationContext(), getList, change);
-                            bidPriceAdapter = new BidPriceAdapter(getApplicationContext(), getList, change);
+                            askPriceAdapter = new AskPriceAdapter(getApplicationContext(), getList, preClosingPrice);
+                            bidPriceAdapter = new BidPriceAdapter(getApplicationContext(), getList, preClosingPrice);
                             binding.askPriceList.setAdapter(askPriceAdapter);
                             binding.askPriceList.setNestedScrollingEnabled(true);
                             binding.bidPriceList.setAdapter(bidPriceAdapter);
@@ -171,8 +171,9 @@ public class OrderBookActivity extends AppCompatActivity {
 //                        binding.accTradeVolume24h.setText(new Plain().toPlainString(String.valueOf(getTickerList.get(0).getAcc_trade_volume_24h())));
                             int idx = market.indexOf("-");
                             String kind = market.substring(idx + 1);
-                            double change = getTickerList.get(0).getPrev_closing_price();
-                            Log.i(TAG, "onComplete: change : " + change);
+                            double preClosingPrice = getTickerList.get(0).getPrev_closing_price();
+                            double nowClosingPrice = getTickerList.get(0).getTrade_price();
+                            Log.i(TAG, "onComplete: change : " + preClosingPrice);
                             binding.accTradeVolume24h.setText(String.format("거래량\n%s", String.format(Locale.KOREA, "%1$,.0f", getTickerList.get(0).getAcc_trade_volume_24h()) + " " + kind));
                             binding.accTradePrice24h.setText(String.format("거래대금\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getAcc_trade_price_24h()))));
                             binding.highest52WeekPrice.setText(String.format("52주 최고\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getHighest_52_week_price()))));
@@ -180,7 +181,7 @@ public class OrderBookActivity extends AppCompatActivity {
                             binding.prevClosingPrice.setText(String.format("전일 종가\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getPrev_closing_price()))));
                             binding.highPrice.setText(String.format("당일 고가\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getHigh_price()))));
                             binding.lowPrice.setText(String.format("당일 저가\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getLow_price()))));
-                            getOrderBook(change);
+                            getOrderBook(preClosingPrice, nowClosingPrice);
                         }
                     }));
         }
