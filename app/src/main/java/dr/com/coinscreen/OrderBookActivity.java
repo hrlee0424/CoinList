@@ -37,6 +37,7 @@ public class OrderBookActivity extends AppCompatActivity {
     List<OrderBookModel> getList;
     private AskPriceAdapter askPriceAdapter;
     private BidPriceAdapter bidPriceAdapter;
+    private boolean startChk = false;
 
     @Override
     protected void onStart() {
@@ -84,7 +85,11 @@ public class OrderBookActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     if (!market.isEmpty()) {
-                        getTicker();
+                        if (!startChk){
+                            getTicker(false);
+                        }else{
+                            getTicker(true);
+                        }
                     }
                     handler.postDelayed(this, 200);
                 }
@@ -101,7 +106,7 @@ public class OrderBookActivity extends AppCompatActivity {
     }
 
     RetrofitApi service = RestfulAdapter.getInstance().getServiceApi();
-    private void getOrderBook(double preClosingPrice, double nowClosingPrice){
+    private void getOrderBook(double preClosingPrice, double nowClosingPrice, boolean start){
         Observable<List<OrderBookModel>> observable = service.getOrderBookItem(market);
 
         mCompositeDisposable.add(observable.subscribeOn(Schedulers.io())
@@ -133,19 +138,27 @@ public class OrderBookActivity extends AppCompatActivity {
                         binding.totalAskSize.setText(new Plain().roundDouble(getList.get(0).getTotal_ask_size()));
                         binding.totalBidSize.setText(new Plain().roundDouble(getList.get(0).getTotal_bid_size()));
                         if (getList.get(0).getItems().size() > 0){
-                            askPriceAdapter = new AskPriceAdapter(getApplicationContext(), getList, preClosingPrice);
-                            bidPriceAdapter = new BidPriceAdapter(getApplicationContext(), getList, preClosingPrice);
-                            binding.askPriceList.setAdapter(askPriceAdapter);
-                            binding.askPriceList.setNestedScrollingEnabled(true);
-                            binding.bidPriceList.setAdapter(bidPriceAdapter);
-                            binding.askPriceList.smoothScrollToPosition(7);
+                            if (!start){
+                                askPriceAdapter = new AskPriceAdapter(getApplicationContext(), getList, preClosingPrice);
+                                bidPriceAdapter = new BidPriceAdapter(getApplicationContext(), getList, preClosingPrice);
+                                binding.askPriceList.setNestedScrollingEnabled(true);
+                                binding.askPriceList.smoothScrollToPosition(7);
+                                binding.askPriceList.setAdapter(askPriceAdapter);
+                                binding.bidPriceList.setAdapter(bidPriceAdapter);
+                                startChk = true;
+                            }else{
+                                askPriceAdapter.orderBookModelList = getList;
+                                askPriceAdapter.notifyDataSetChanged();
+                                bidPriceAdapter.orderBookModelList = getList;
+                                bidPriceAdapter.notifyDataSetChanged();
+                            }
                         }
                     }
                 }));
     }
 
         List<TickerModel> getTickerList;
-        private void getTicker(){
+        private void getTicker(boolean start){
             Observable<List<TickerModel>> observable = service.getTickerList(market);
             mCompositeDisposable.add(observable.subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
@@ -179,7 +192,7 @@ public class OrderBookActivity extends AppCompatActivity {
                             binding.prevClosingPrice.setText(String.format("전일 종가\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getPrev_closing_price()))));
                             binding.highPrice.setText(String.format("당일 고가\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getHigh_price()))));
                             binding.lowPrice.setText(String.format("당일 저가\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getLow_price()))));
-                            getOrderBook(preClosingPrice, nowClosingPrice);
+                            getOrderBook(preClosingPrice, nowClosingPrice, start);
                         }
                     }));
         }
