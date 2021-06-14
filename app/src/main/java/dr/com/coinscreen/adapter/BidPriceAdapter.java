@@ -41,19 +41,26 @@ public class BidPriceAdapter extends RecyclerView.Adapter<BidPriceAdapter.ViewHo
 //        holder.bid_price.setText(String.valueOf(orderBookModelList.get(0).getItems().get(position).getBid_price()));
         double now_orderBook = orderBookModelList.get(0).getItems().get(position).getBid_price();
         String rate = new Plain().toFluctuationRate(now_orderBook, preClosingPrice);
+        double size = orderBookModelList.get(0).getItems().get(position).getBid_size();
 
         if (now_orderBook < preClosingPrice){
-            holder.bid_price.setTextColor(Color.BLUE);
+            holder.bid_price.setTextColor(context.getResources().getColor(R.color.rateDownColor));
+            holder.bid_size.setTextColor(context.getResources().getColor(R.color.rateDownColor));
         }else if(now_orderBook == preClosingPrice){
             holder.bid_price.setTextColor(Color.BLACK);
+            holder.bid_size.setTextColor(Color.BLACK);
         }else {
-            holder.bid_price.setTextColor(Color.RED);
+            holder.bid_price.setTextColor(context.getResources().getColor(R.color.rateUpColor));
+            holder.bid_size.setTextColor(context.getResources().getColor(R.color.rateUpColor));
         }
 
-        if (rate.contains("-100")){
+        //bid_size 나중에 추가
+        if (now_orderBook == 0.0){
             holder.bid_price.setText("");
+//            holder.bid_size.setText("");
         }else{
             holder.bid_price.setText(String.format("%s%s", new Plain().toPlainString(String.valueOf(now_orderBook)), " " + rate + "%"));
+//            holder.bid_size.setText(String.valueOf(new Plain().toPlainString(String.valueOf(size))));
         }
 
 //        holder.bid_price.setText(new Plain().toPlainString(String.valueOf(orderBookModelList.get(0).getItems().get(position).getBid_price())));
@@ -66,11 +73,11 @@ public class BidPriceAdapter extends RecyclerView.Adapter<BidPriceAdapter.ViewHo
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder{
-        TextView bid_price;
+        TextView bid_price, bid_size;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             bid_price = itemView.findViewById(R.id.ask_price);
-
+            bid_size = itemView.findViewById(R.id.ask_size);
         }
     }
 }

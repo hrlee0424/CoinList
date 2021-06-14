@@ -1,5 +1,6 @@
 package dr.com.coinscreen;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -21,9 +22,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.MenuItem;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class OrderBookActivity extends AppCompatActivity {
     private static final String TAG = "OrderBookActivity";
@@ -59,6 +62,9 @@ public class OrderBookActivity extends AppCompatActivity {
         korName = intent.getStringExtra("korName");
         Log.i(TAG, "onCreate: " + market);
 
+        setSupportActionBar(binding.toolBar);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
         /*if (!market.isEmpty()) {
             getOrderBook();
             getTicker();
@@ -119,7 +125,7 @@ public class OrderBookActivity extends AppCompatActivity {
                     @Override
                     public void onComplete() {
                         binding.market.setText(getList.get(0).getMarket());
-                        binding.timestamp.setText(new Plain().toTimeStamp(getList.get(0).getTimestamp()));
+//                        binding.timestamp.setText(new Plain().toTimeStamp(getList.get(0).getTimestamp()));
                         binding.korName.setText(korName);
 
                         /*binding.totalAskSize.setText(String.valueOf(getList.get(0).getTotal_ask_size()));
@@ -161,14 +167,6 @@ public class OrderBookActivity extends AppCompatActivity {
 
                         @Override
                         public void onComplete() {
-                /*binding.accTradeVolume24h.setText(String.valueOf(getTickerList.get(0).getAcc_trade_volume_24h()));
-                binding.accTradePrice24h.setText(String.valueOf(getTickerList.get(0).getAcc_trade_price_24h()));
-                binding.highest52WeekPrice.setText(String.valueOf(getTickerList.get(0).getHighest_52_week_price()));
-                binding.lowest52WeekPrice.setText(String.valueOf(getTickerList.get(0).getLowest_52_week_price()));
-                binding.prevClosingPrice.setText(String.valueOf(getTickerList.get(0).getPrev_closing_price()));
-                binding.highPrice.setText(String.valueOf(getTickerList.get(0).getHigh_price()));
-                binding.lowPrice.setText(String.valueOf(getTickerList.get(0).getLow_price()));*/
-//                        binding.accTradeVolume24h.setText(new Plain().toPlainString(String.valueOf(getTickerList.get(0).getAcc_trade_volume_24h())));
                             int idx = market.indexOf("-");
                             String kind = market.substring(idx + 1);
                             double preClosingPrice = getTickerList.get(0).getPrev_closing_price();
@@ -176,8 +174,8 @@ public class OrderBookActivity extends AppCompatActivity {
                             Log.i(TAG, "onComplete: change : " + preClosingPrice);
                             binding.accTradeVolume24h.setText(String.format("거래량\n%s", String.format(Locale.KOREA, "%1$,.0f", getTickerList.get(0).getAcc_trade_volume_24h()) + " " + kind));
                             binding.accTradePrice24h.setText(String.format("거래대금\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getAcc_trade_price_24h()))));
-                            binding.highest52WeekPrice.setText(String.format("52주 최고\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getHighest_52_week_price()))));
-                            binding.lowest52WeekPrice.setText(String.format("52주 최저\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getLowest_52_week_price()))));
+                            binding.highest52WeekPrice.setText(String.format("52주 최고\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getHighest_52_week_price())) + "\n" + getTickerList.get(0).getHighest_52_week_date()));
+                            binding.lowest52WeekPrice.setText(String.format("52주 최저\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getLowest_52_week_price())) + "\n" + getTickerList.get(0).getLowest_52_week_date()));
                             binding.prevClosingPrice.setText(String.format("전일 종가\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getPrev_closing_price()))));
                             binding.highPrice.setText(String.format("당일 고가\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getHigh_price()))));
                             binding.lowPrice.setText(String.format("당일 저가\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getLow_price()))));
@@ -185,4 +183,14 @@ public class OrderBookActivity extends AppCompatActivity {
                         }
                     }));
         }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home :
+                finish();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
+}

@@ -44,14 +44,14 @@ public class AskPriceAdapter extends RecyclerView.Adapter<AskPriceAdapter.ViewHo
         String rate = new Plain().toFluctuationRate(now_orderBook, preClosingPrice);
         Log.i(TAG, "onBindViewHolder: ssssssss " + rate);
         if (now_orderBook < preClosingPrice){
-            holder.ask_price.setTextColor(Color.BLUE);
+            holder.ask_price.setTextColor(context.getResources().getColor(R.color.rateDownColor));
         }else if(now_orderBook == preClosingPrice){
             holder.ask_price.setTextColor(Color.BLACK);
         }else {
-            holder.ask_price.setTextColor(Color.RED);
+            holder.ask_price.setTextColor(context.getResources().getColor(R.color.rateUpColor));
         }
 
-        if (rate.contains("-100")){
+        if (now_orderBook == 0.0){
             holder.ask_price.setText("");
         }else{
             holder.ask_price.setText(String.format("%s%s", new Plain().toPlainString(String.valueOf(now_orderBook)), " " + rate + "%"));
