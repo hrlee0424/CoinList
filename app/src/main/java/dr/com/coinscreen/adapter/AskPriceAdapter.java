@@ -54,7 +54,7 @@ public class AskPriceAdapter extends RecyclerView.Adapter<AskPriceAdapter.ViewHo
         if (now_orderBook == 0.0){
             holder.ask_price.setText("");
         }else{
-            holder.ask_price.setText(String.format("%s%s", new Plain().toPlainString(String.valueOf(now_orderBook)), " " + rate + "%"));
+            holder.ask_price.setText(String.format("%s%s", new Plain().toPlainString(String.valueOf(now_orderBook)), "  " + rate + "%"));
         }
     }
 

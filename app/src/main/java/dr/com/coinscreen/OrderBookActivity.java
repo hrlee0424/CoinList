@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import dr.com.coinscreen.adapter.AskPriceAdapter;
 import dr.com.coinscreen.adapter.BidPriceAdapter;
+import dr.com.coinscreen.adapter.TradesAdapter;
 import dr.com.coinscreen.databinding.DetailBinding;
 import dr.com.coinscreen.dto.OrderBookModel;
 import dr.com.coinscreen.dto.TickerModel;
@@ -38,6 +39,7 @@ public class OrderBookActivity extends AppCompatActivity {
     List<OrderBookModel> getList;
     private AskPriceAdapter askPriceAdapter;
     private BidPriceAdapter bidPriceAdapter;
+    private TradesAdapter tradesAdapter;
     private boolean startChk = false;
     private int idx = 0;
 
@@ -196,14 +198,14 @@ public class OrderBookActivity extends AppCompatActivity {
                             binding.highPrice.setText(String.format("당일 고가\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getHigh_price()))));
                             binding.lowPrice.setText(String.format("당일 저가\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getLow_price()))));
                             getOrderBook(preClosingPrice, nowClosingPrice, start);
-                            getTrades();
+                            getTrades(start);
                         }
                     }));
         }
 
     List<TradesModel> getTradesModel;
-    private void getTrades(){
-        Observable<List<TradesModel>> observable = service.getTradesItem(market, 1);
+    private void getTrades(boolean startChk){
+        Observable<List<TradesModel>> observable = service.getTradesItem(market, 20);
         mCompositeDisposable.add(observable.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableObserver<List<TradesModel>>() {
@@ -223,17 +225,22 @@ public class OrderBookActivity extends AppCompatActivity {
 
                     @Override
                     public void onComplete() {
-//                        Log.i(TAG, "onComplete:  " + market + "  " + getTradesModel.get(0).getTrade_date_utc());
-//                        Log.i(TAG, "onComplete: 1111 " + getTradesModel.get(0).getTrade_date_utc().length());
-                            double tradePrice = getTradesModel.get(0).getTrade_price();
-                            double preClosingPrice = getTickerList.get(0).getPrev_closing_price();
-                            binding.tradePrice.setText(new Plain().toPlainString(String.valueOf(getTradesModel.get(0).getTrade_price())));
-                            binding.textWon.setText(krw);
-                            String rate = new Plain().toFluctuationRate(tradePrice, preClosingPrice);
-                            binding.textYesterday.setText("전일대비");
-                            binding.perYesterday.setText(rate);
-                            binding.krwYesterday.setText(new Plain().subPrice(tradePrice, preClosingPrice));
-                            setTextColor();
+                        if (!startChk){
+                            tradesAdapter = new TradesAdapter(getApplicationContext(), getTradesModel);
+                            binding.listTrades.setAdapter(tradesAdapter);
+                        }else{
+                            tradesAdapter.tradesModels = getTradesModel;
+                            tradesAdapter.notifyDataSetChanged();
+                        }
+                        double tradePrice = getTradesModel.get(0).getTrade_price();
+                        double preClosingPrice = getTickerList.get(0).getPrev_closing_price();
+                        binding.tradePrice.setText(new Plain().toPlainString(String.valueOf(getTradesModel.get(0).getTrade_price())));
+                        binding.textWon.setText(krw);
+                        String rate = new Plain().toFluctuationRate(tradePrice, preClosingPrice);
+                        binding.textYesterday.setText("전일대비");
+                        binding.perYesterday.setText(rate);
+                        binding.krwYesterday.setText(new Plain().subPrice(tradePrice, preClosingPrice));
+                        setTextColor();
                     }
                 }));
     }

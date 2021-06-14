@@ -59,7 +59,7 @@ public class BidPriceAdapter extends RecyclerView.Adapter<BidPriceAdapter.ViewHo
             holder.bid_price.setText("");
 //            holder.bid_size.setText("");
         }else{
-            holder.bid_price.setText(String.format("%s%s", new Plain().toPlainString(String.valueOf(now_orderBook)), " " + rate + "%"));
+            holder.bid_price.setText(String.format("%s%s", new Plain().toPlainString(String.valueOf(now_orderBook)), "  " + rate + "%"));
 //            holder.bid_size.setText(String.valueOf(new Plain().toPlainString(String.valueOf(size))));
         }
 
