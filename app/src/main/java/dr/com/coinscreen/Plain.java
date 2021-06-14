@@ -48,6 +48,11 @@ public class Plain {
         return result;
     }
 
+    public String subPrice(double nowPrice, double yesPrice){
+        String now = String.valueOf(nowPrice - yesPrice);
+        return toPlainString(now);
+    }
+
     /*public String toDoubleFormat(Double num) {
         DecimalFormat df = null;
 

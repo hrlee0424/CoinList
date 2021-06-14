@@ -42,7 +42,7 @@ public class AskPriceAdapter extends RecyclerView.Adapter<AskPriceAdapter.ViewHo
 //        holder.ask_price.setText(String.valueOf(orderBookModelList.get(0).getItems().get(position).getAsk_price()));
         double now_orderBook = orderBookModelList.get(0).getItems().get(position).getAsk_price();
         String rate = new Plain().toFluctuationRate(now_orderBook, preClosingPrice);
-        Log.i(TAG, "onBindViewHolder: ssssssss " + rate);
+//        Log.i(TAG, "onBindViewHolder: ssssssss " + rate);
         if (now_orderBook < preClosingPrice){
             holder.ask_price.setTextColor(context.getResources().getColor(R.color.rateDownColor));
         }else if(now_orderBook == preClosingPrice){

@@ -10,6 +10,7 @@ import dr.com.coinscreen.adapter.BidPriceAdapter;
 import dr.com.coinscreen.databinding.DetailBinding;
 import dr.com.coinscreen.dto.OrderBookModel;
 import dr.com.coinscreen.dto.TickerModel;
+import dr.com.coinscreen.dto.TradesModel;
 import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -32,12 +33,13 @@ public class OrderBookActivity extends AppCompatActivity {
     private static final String TAG = "OrderBookActivity";
     private DetailBinding binding;
     private final CompositeDisposable mCompositeDisposable = new CompositeDisposable();
-    private String market, korName;
+    private String market, korName, kind, krw;
     final Handler handler = new Handler(Looper.getMainLooper());
     List<OrderBookModel> getList;
     private AskPriceAdapter askPriceAdapter;
     private BidPriceAdapter bidPriceAdapter;
     private boolean startChk = false;
+    private int idx = 0;
 
     @Override
     protected void onStart() {
@@ -62,6 +64,10 @@ public class OrderBookActivity extends AppCompatActivity {
         market = intent.getStringExtra("market");
         korName = intent.getStringExtra("korName");
         Log.i(TAG, "onCreate: " + market);
+
+        idx = market.indexOf("-");
+        kind = market.substring(idx + 1);
+        krw = market.substring(0, idx);
 
         setSupportActionBar(binding.toolBar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -115,7 +121,6 @@ public class OrderBookActivity extends AppCompatActivity {
 
                     @Override
                     public void onNext(List<OrderBookModel> value) {
-                        Log.i(TAG, "onNext: " + value.toString());
                         getList = value;
                     }
 
@@ -166,7 +171,6 @@ public class OrderBookActivity extends AppCompatActivity {
 
                         @Override
                         public void onNext(List<TickerModel> value) {
-                            Log.i(TAG, "onNext: 11111111" + value.toString());
                             getTickerList = value;
                         }
 
@@ -180,11 +184,9 @@ public class OrderBookActivity extends AppCompatActivity {
 
                         @Override
                         public void onComplete() {
-                            int idx = market.indexOf("-");
-                            String kind = market.substring(idx + 1);
+//                            kind = market.substring(idx + 1);
                             double preClosingPrice = getTickerList.get(0).getPrev_closing_price();
                             double nowClosingPrice = getTickerList.get(0).getTrade_price();
-                            Log.i(TAG, "onComplete: change : " + preClosingPrice);
                             binding.accTradeVolume24h.setText(String.format("거래량\n%s", String.format(Locale.KOREA, "%1$,.0f", getTickerList.get(0).getAcc_trade_volume_24h()) + " " + kind));
                             binding.accTradePrice24h.setText(String.format("거래대금\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getAcc_trade_price_24h()))));
                             binding.highest52WeekPrice.setText(String.format("52주 최고\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getHighest_52_week_price())) + "\n" + getTickerList.get(0).getHighest_52_week_date()));
@@ -193,9 +195,58 @@ public class OrderBookActivity extends AppCompatActivity {
                             binding.highPrice.setText(String.format("당일 고가\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getHigh_price()))));
                             binding.lowPrice.setText(String.format("당일 저가\n%s", new Plain().toPlainString(String.valueOf(getTickerList.get(0).getLow_price()))));
                             getOrderBook(preClosingPrice, nowClosingPrice, start);
+                            getTrades();
                         }
                     }));
         }
+
+    List<TradesModel> getTradesModel;
+    private void getTrades(){
+        Observable<List<TradesModel>> observable = service.getTradesItem(market, 1);
+        mCompositeDisposable.add(observable.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<List<TradesModel>>() {
+
+                    @Override
+                    public void onNext(List<TradesModel> value) {
+                        getTradesModel = value;
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i(TAG, "onError: 1111111" + e.getMessage());
+                        if (handler != null){
+                            handler.removeMessages(0);
+                        }
+                    }
+
+                    @Override
+                    public void onComplete() {
+//                        Log.i(TAG, "onComplete:  " + market + "  " + getTradesModel.get(0).getTrade_date_utc());
+//                        Log.i(TAG, "onComplete: 1111 " + getTradesModel.get(0).getTrade_date_utc().length());
+                            double tradePrice = getTradesModel.get(0).getTrade_price();
+                            double preClosingPrice = getTickerList.get(0).getPrev_closing_price();
+                            binding.tradePrice.setText(new Plain().toPlainString(String.valueOf(getTradesModel.get(0).getTrade_price())));
+                            binding.textWon.setText(krw);
+                            String rate = new Plain().toFluctuationRate(tradePrice, preClosingPrice);
+                            binding.perYesterday.setText(rate);
+                            binding.krwYesterday.setText(new Plain().subPrice(tradePrice, preClosingPrice));
+                            setTextColor();
+                    }
+                }));
+    }
+
+    private void setTextColor(){
+        if (String.valueOf(binding.perYesterday.getText().charAt(0)).equals("-")){
+            binding.perYesterday.setTextColor(getResources().getColor(R.color.rateDownColor));
+            binding.krwYesterday.setTextColor(getResources().getColor(R.color.rateDownColor));
+            binding.tradePrice.setTextColor(getResources().getColor(R.color.rateDownColor));
+        }else{
+            binding.perYesterday.setTextColor(getResources().getColor(R.color.rateUpColor));
+            binding.krwYesterday.setTextColor(getResources().getColor(R.color.rateUpColor));
+            binding.tradePrice.setTextColor(getResources().getColor(R.color.rateUpColor));
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {

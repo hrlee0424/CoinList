@@ -19,6 +19,7 @@ public interface RetrofitApi {
     Observable<List<OrderBookModel>> getOrderBookItem(@Query("markets")String markets);
     @GET("ticker")
     Observable<List<TickerModel>> getTickerList(@Query("markets")String markets);
-    @GET("trades")
-    Observable<List<TradesModel>> getTradesItem(@Query("markets")String markets, @Query("count")int count);
+    //https://api.upbit.com/v1/trades/ticks?market=KRW-BTC&count=1
+    @GET("trades/ticks")
+    Observable<List<TradesModel>> getTradesItem(@Query("market")String markets, @Query("count")int count);
 }
