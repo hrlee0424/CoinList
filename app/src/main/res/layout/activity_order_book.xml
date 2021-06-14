@@ -64,9 +64,9 @@
         android:paddingStart="10dp">
 
         <TextView
+            android:id="@+id/text_yesterday"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="전일대비"/>
+            android:layout_height="wrap_content" />
 
         <TextView
             android:id="@+id/per_yesterday"
@@ -209,11 +209,11 @@
                     android:gravity="center_horizontal" />
 
                 <TextView
+                    android:id="@+id/text_size"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:gravity="center_horizontal"
-                    android:text="수량"/>
+                    android:gravity="center_horizontal" />
 
                 <TextView
                     android:id="@+id/total_bid_size"

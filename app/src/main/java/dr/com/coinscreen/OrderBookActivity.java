@@ -65,6 +65,9 @@ public class OrderBookActivity extends AppCompatActivity {
         korName = intent.getStringExtra("korName");
         Log.i(TAG, "onCreate: " + market);
 
+        binding.market.setText(market);
+        binding.korName.setText(korName);
+
         idx = market.indexOf("-");
         kind = market.substring(idx + 1);
         krw = market.substring(0, idx);
@@ -134,12 +137,10 @@ public class OrderBookActivity extends AppCompatActivity {
 
                     @Override
                     public void onComplete() {
-                        binding.market.setText(getList.get(0).getMarket());
 //                        binding.timestamp.setText(new Plain().toTimeStamp(getList.get(0).getTimestamp()));
-                        binding.korName.setText(korName);
-
                         /*binding.totalAskSize.setText(String.valueOf(getList.get(0).getTotal_ask_size()));
                         binding.totalBidSize.setText(String.valueOf(getList.get(0).getTotal_bid_size()));*/
+                        binding.textSize.setText("수량");
                         binding.totalAskSize.setText(new Plain().roundDouble(getList.get(0).getTotal_ask_size()));
                         binding.totalBidSize.setText(new Plain().roundDouble(getList.get(0).getTotal_bid_size()));
                         if (getList.get(0).getItems().size() > 0){
@@ -229,6 +230,7 @@ public class OrderBookActivity extends AppCompatActivity {
                             binding.tradePrice.setText(new Plain().toPlainString(String.valueOf(getTradesModel.get(0).getTrade_price())));
                             binding.textWon.setText(krw);
                             String rate = new Plain().toFluctuationRate(tradePrice, preClosingPrice);
+                            binding.textYesterday.setText("전일대비");
                             binding.perYesterday.setText(rate);
                             binding.krwYesterday.setText(new Plain().subPrice(tradePrice, preClosingPrice));
                             setTextColor();
