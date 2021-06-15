@@ -11,6 +11,20 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+        <item name="android:fontFamily">@font/main_font</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="Text.RankStyle" parent="android:TextAppearance">
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">@font/main_font</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
+    <style name="Text.TitleStyle" parent="android:TextAppearance">
+        <item name="android:textStyle">bold</item>
+        <item name="android:fontFamily">@font/main_font</item>
+        <item name="android:includeFontPadding">false</item>
+    </style>
+
 </resources>

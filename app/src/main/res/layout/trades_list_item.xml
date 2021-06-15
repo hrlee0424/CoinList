@@ -2,21 +2,26 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="5dp" android:paddingEnd="5dp">
+    android:paddingStart="2dp" android:paddingEnd="2dp">
 
     <TextView
         android:id="@+id/trade_price"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:textSize="12sp"/>
+        android:gravity="end"
+        android:lines="1"
+        android:textSize="12sp"
+        style="@style/Text.RankStyle"/>
 
     <TextView
         android:id="@+id/trade_volume"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:gravity="end"
+        android:lines="1"
         android:textSize="12sp"
-        android:gravity="end"/>
+        style="@style/Text.RankStyle"/>
 
 </LinearLayout>

@@ -77,10 +77,6 @@ public class OrderBookActivity extends AppCompatActivity {
         setSupportActionBar(binding.toolBar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle("");
-        /*if (!market.isEmpty()) {
-            getOrderBook();
-            getTicker();
-        }*/
 
         DividerItemDecoration dividerItemDecoration =
                 new DividerItemDecoration(getApplicationContext(),new LinearLayoutManager(this).getOrientation());
@@ -238,8 +234,8 @@ public class OrderBookActivity extends AppCompatActivity {
                         binding.textWon.setText(krw);
                         String rate = new Plain().toFluctuationRate(tradePrice, preClosingPrice);
                         binding.textYesterday.setText("전일대비");
-                        binding.perYesterday.setText(rate);
-                        binding.krwYesterday.setText(new Plain().subPrice(tradePrice, preClosingPrice));
+                        binding.perYesterday.setText(String.format("%s%%", rate));
+                        binding.krwYesterday.setText(new Plain().subPrice(tradePrice, preClosingPrice, "BTC"));
                         setTextColor();
                     }
                 }));
