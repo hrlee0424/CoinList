@@ -26,6 +26,7 @@ import android.os.Looper;
 import android.util.Log;
 import android.view.MenuItem;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -135,12 +136,15 @@ public class OrderBookActivity extends AppCompatActivity {
 
                     @Override
                     public void onComplete() {
-//                        binding.timestamp.setText(new Plain().toTimeStamp(getList.get(0).getTimestamp()));
-                        /*binding.totalAskSize.setText(String.valueOf(getList.get(0).getTotal_ask_size()));
-                        binding.totalBidSize.setText(String.valueOf(getList.get(0).getTotal_bid_size()));*/
                         binding.textSize.setText("수량");
-                        binding.totalAskSize.setText(new Plain().roundDouble(getList.get(0).getTotal_ask_size()));
-                        binding.totalBidSize.setText(new Plain().roundDouble(getList.get(0).getTotal_bid_size()));
+                        Log.i(TAG, "onComplete: 수량 : " + getList.get(0).getTotal_ask_size());
+                        DecimalFormat df = new DecimalFormat("###,###.###");
+                        String d = df.format(getList.get(0).getTotal_ask_size());
+                        String f = df.format(getList.get(0).getTotal_bid_size());
+                        binding.totalAskSize.setText(d);
+                        binding.totalBidSize.setText(f);
+//                        binding.totalAskSize.setText(new Plain().roundDouble(getList.get(0).getTotal_ask_size()));
+//                        binding.totalBidSize.setText(new Plain().roundDouble(getList.get(0).getTotal_bid_size()));
                         if (getList.get(0).getItems().size() > 0){
                             if (!start){
                                 askPriceAdapter = new AskPriceAdapter(getApplicationContext(), getList, preClosingPrice);

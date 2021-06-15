@@ -11,6 +11,13 @@ import java.util.Locale;
 public class Plain {
     private static final String TAG = "Plain";
     public String toPlainString(String num) {
+//        String str = String.valueOf(num);
+//        DecimalFormat df = new DecimalFormat();
+        /*if (num.contains("E")){
+            return new BigDecimal(num).toPlainString();
+        }else{
+            return new BigDecimal(num).toString();
+        }*/
         if (num.contains("-")) {
             if (num.length() > 8){
                 double d = Double.parseDouble(num);
@@ -59,4 +66,5 @@ public class Plain {
         String now = String.valueOf(nowPrice - yesPrice);
         return toPlainString(now);
     }
+
 }
