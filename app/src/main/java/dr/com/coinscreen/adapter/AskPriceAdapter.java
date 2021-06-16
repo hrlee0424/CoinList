@@ -50,7 +50,7 @@ public class AskPriceAdapter extends RecyclerView.Adapter<AskPriceAdapter.ViewHo
         }else {
             holder.ask_price.setTextColor(context.getResources().getColor(R.color.rateUpColor));
         }
-
+        Log.i(TAG, "onBindViewHolder: 1111111111111 " + position + "   " + rate);
         if (now_orderBook == 0.0){
             holder.ask_price.setText("");
         }else{

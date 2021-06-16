@@ -54,7 +54,6 @@ public class BidPriceAdapter extends RecyclerView.Adapter<BidPriceAdapter.ViewHo
             holder.bid_size.setTextColor(context.getResources().getColor(R.color.rateUpColor));
         }
 
-        //bid_size 나중에 추가
         if (now_orderBook == 0.0){
             holder.bid_price.setText("");
 //            holder.bid_size.setText("");
